@@ -12,16 +12,16 @@ def get_supabase_client() -> Client:
         raise ValueError("Missing Supabase URL or Supabase KEY in .env")
     return create_client(url, key)
  
-def load_to_supabase(staged_path: str, table_name: str = "titanic_data"):
+def load_to_supabase(staged_path: str, table_name: str = "iris_data"):
  
     if not os.path.isabs(staged_path):
         base_dir = os.path.dirname(__file__)
         staged_path = os.path.abspath(os.path.join(base_dir, staged_path))
  
-    print(f"Looking for the Titanic data file at: {staged_path}")
+    print(f"Looking for the data file at: {staged_path}")
     if not os.path.exists(staged_path):
         print(f"Error: file not found at: {staged_path}")
-        print("Run your Titanic transform script first to generate titanic_transformed.csv")
+        print("Run transform_iris.py first to generate iris_transformed.csv")
         return
  
     try:
@@ -31,7 +31,7 @@ def load_to_supabase(staged_path: str, table_name: str = "titanic_data"):
  
         total_rows = len(df)
         batch_size = 50
-        print(f"Loading {total_rows} Titanic rows into '{table_name}'")
+        print(f"Loading {total_rows} rows into '{table_name}'")
  
         for i in range(0, total_rows, batch_size):
             batch = df.iloc[i:i + batch_size].copy()
@@ -48,11 +48,13 @@ def load_to_supabase(staged_path: str, table_name: str = "titanic_data"):
                 print(f"Error in batch {i // batch_size + 1}: {str(e)}")
                 continue
  
-        print(f"Finished loading Titanic dataset into '{table_name}'")
+        print(f"Finished loading Iris dataset into '{table_name}'")
  
     except Exception as e:
-        print(f"Error loading Titanic data: {e}")
+        print(f"Error loading data: {e}")
  
 if __name__ == "__main__":
-    staged_csv_path = os.path.join("..", "data", "staged", "titanic_transformed.csv")
+    staged_csv_path = os.path.join("..", "data", "staged", "iris_transformed.csv")
     load_to_supabase(staged_csv_path)
+
+ 
